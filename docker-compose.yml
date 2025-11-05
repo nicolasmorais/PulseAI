@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   web:
-    image: ghcr.io/your-github-username/your-repo-name:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: dyad-app-web
 
     ports:

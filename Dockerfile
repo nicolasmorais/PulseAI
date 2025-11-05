@@ -1,42 +1,42 @@
-# Stage 1: Build the Next.js application
-FROM node:20-alpine AS builder
-
+# 1. Base Image for Dependencies
+FROM node:18-alpine AS deps
+# Install libc6-compat for compatibility
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
+# Copy package files and install dependencies using npm
+COPY package.json ./
+RUN npm install
 
-# Copy package.json and package-lock.json (or yarn.lock) to leverage Docker cache
-COPY package.json yarn.lock* ./
-RUN yarn install --frozen-lockfile
-
+# 2. Builder stage
+FROM node:18-alpine AS builder
+WORKDIR /app
+# Copy dependencies from the previous stage
+COPY --from=deps /app/node_modules ./node_modules
 # Copy the rest of the application code
 COPY . .
-
 # Build the Next.js application
-# 'output' directory contains the optimized Next.js build
-RUN yarn build
+RUN npm run build
 
-# Stage 2: Create the production-ready image
-FROM node:20-alpine
-
-# Set environment variables for Next.js production mode
-ENV NODE_ENV=production
-ENV PORT=3000
-
+# 3. Production image
+FROM node:18-alpine AS runner
 WORKDIR /app
 
-# Copy only necessary files from the builder stage
-# The .next directory contains the production build of Next.js
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+ENV NODE_ENV=production
+
+# Create a non-root user for security
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Copy necessary files from the builder stage
 COPY --from=builder /app/public ./public
-# If you have static assets in a separate 'static' folder, copy them too
-# COPY --from=builder /app/static ./static
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# No native dependencies for lowdb or @foreast/file-async, so no extra build tools or libs needed.
+# Switch to the non-root user
+USER nextjs
 
-# Expose the port Next.js will run on
 EXPOSE 3000
+ENV PORT 3000
 
-# Command to run the Next.js application in production mode
-CMD ["yarn", "start"]
-
+# Start the application
+CMD ["node", "server.js"]
