@@ -25,8 +25,6 @@ interface Project {
 interface Analysis {
   id: string;
   comments: string;
-  videoTranscript?: string;
-  videoUrl?: string;
   prompt: string;
   createdAt: string;
   // Futuramente, podemos armazenar as 10 ideias geradas aqui

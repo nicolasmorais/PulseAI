@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -13,8 +12,6 @@ import { Loader2 } from "lucide-react";
 export default function NewIdeaPage() {
   const [comments, setComments] = useState("");
   const [prompt, setPrompt] = useState("");
-  const [videoTranscript, setVideoTranscript] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -35,7 +32,7 @@ export default function NewIdeaPage() {
       const response = await fetch('/api/analyses', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ comments, prompt, videoTranscript, videoUrl }),
+        body: JSON.stringify({ comments, prompt }),
       });
 
       if (!response.ok) {
@@ -49,8 +46,6 @@ export default function NewIdeaPage() {
       console.log("Análise criada com ID:", result.id);
       setComments("");
       setPrompt("");
-      setVideoTranscript("");
-      setVideoUrl("");
 
     } catch (error: any) {
       toast.error(error.message || "Ocorreu um erro ao enviar os dados.");
@@ -69,7 +64,7 @@ export default function NewIdeaPage() {
       <Card>
         <CardHeader>
           <CardTitle>Entrada de Dados</CardTitle>
-          <CardDescription>Quanto mais dados você fornecer, melhores serão as ideias geradas.</CardDescription>
+          <CardDescription>A IA usará os comentários e o seu prompt para gerar as ideias.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -94,26 +89,6 @@ export default function NewIdeaPage() {
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="transcript">Transcrição do Vídeo (opcional)</Label>
-              <Textarea
-                id="transcript"
-                placeholder="Cole a transcrição do vídeo para mais contexto..."
-                className="min-h-[100px]"
-                value={videoTranscript}
-                onChange={(e) => setVideoTranscript(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="url">URL do Vídeo (opcional)</Label>
-              <Input
-                id="url"
-                type="url"
-                placeholder="https://www.youtube.com/watch?v=..."
-                value={videoUrl}
-                onChange={(e) => setVideoUrl(e.target.value)}
               />
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
