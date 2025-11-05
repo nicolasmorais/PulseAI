@@ -1,28 +1,50 @@
 import { Low } from 'lowdb';
-import { JSONFile } from 'lowdb/node'; // Correct import path for JSONFile
+import { JSONFile } from 'lowdb/node';
 import path from 'path';
-import fs from 'fs'; // Used only for checking directory existence synchronously for initial setup
+import fs from 'fs';
 
-// Define the generic shape of your database for the template.
-// The AI will extend this schema based on user's specific app requirements.
-interface DbSchema {
-  examples: { id: number; name: string; createdAt: string }[];
-  // Future: The AI will add new collections here based on user needs, e.g.,
-  // myCustomData: { id: string; value: string }[];
+// Definindo a estrutura de um Projeto
+interface Project {
+  id: string;
+  analysisId: string;
+  title: string;
+  type: 'ebook' | 'desafio' | 'guia';
+  opportunityScore: number;
+  suggestedPrice: number;
+  targetAudience: string;
+  demand: 'alta' | 'média' | 'baixa';
+  duration?: 7 | 14 | 21 | 30;
+  tone: 'profissional' | 'casual' | 'motivacional';
+  outline: object[];
+  content: string;
+  salesPageCopy: string;
+  createdAt: string;
 }
 
-// Define the path for the JSON database file
+// Definindo a estrutura de uma Análise
+interface Analysis {
+  id: string;
+  comments: string;
+  videoTranscript?: string;
+  videoUrl?: string;
+  createdAt: string;
+  // Futuramente, podemos armazenar as 10 ideias geradas aqui
+}
+
+
+// Estendendo o esquema do banco de dados
+interface DbSchema {
+  examples: { id: number; name: string; createdAt: string }[];
+  analyses: Analysis[];
+  projects: Project[];
+}
+
 const DB_FILE_NAME = 'db.json';
-const DB_DIR_PATH = process.env.DATABASE_DIR || './data'; // Allows configuring DB directory via env
+const DB_DIR_PATH = process.env.DATABASE_DIR || './data';
 const DB_FULL_PATH = path.resolve(process.cwd(), DB_DIR_PATH, DB_FILE_NAME);
 
 let dbInstance: Low<DbSchema> | null = null;
 
-/**
- * Initializes and returns a singleton Lowdb database instance.
- * If the database file doesn't exist, it will be created with default data.
- * @returns {Promise<Low<DbSchema>>} The database instance.
- */
 export async function getDb(): Promise<Low<DbSchema>> {
   if (dbInstance) {
     if (dbInstance.data) {
@@ -33,15 +55,14 @@ export async function getDb(): Promise<Low<DbSchema>> {
   }
 
   try {
-    // Ensure the directory for the database file exists
     const dir = path.dirname(DB_FULL_PATH);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
 
     const adapter = new JSONFile<DbSchema>(DB_FULL_PATH);
-    // Provide initial generic structure for the template
-    dbInstance = new Low<DbSchema>(adapter, { examples: [] });
+    // Inicializando com as novas coleções vazias
+    dbInstance = new Low<DbSchema>(adapter, { examples: [], analyses: [], projects: [] });
 
     await dbInstance.read();
 
@@ -53,7 +74,3 @@ export async function getDb(): Promise<Low<DbSchema>> {
     throw error;
   }
 }
-
-// Note: With Lowdb and JSONFile adapter, after any modification to db.data,
-// you must call `db.write()` to persist changes to the file.
-// This will be handled in the API routes.
