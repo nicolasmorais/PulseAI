@@ -3,21 +3,32 @@ import { JSONFile } from 'lowdb/node';
 import path from 'path';
 import fs from 'fs';
 
+// Definindo a estrutura de um Order Bump
+interface OrderBump {
+  name: string;
+  price: string;
+  type: string;
+  targetAudience: string;
+  pain: string;
+}
+
 // Definindo a estrutura de um Projeto
 interface Project {
   id: string;
-  analysisId: string;
-  title: string;
-  type: 'ebook' | 'desafio' | 'guia';
-  opportunityScore: number;
-  suggestedPrice: number;
-  targetAudience: string;
-  demand: 'alta' | 'média' | 'baixa';
-  duration?: 7 | 14 | 21 | 30;
-  tone: 'profissional' | 'casual' | 'motivacional';
-  outline: object[];
-  content: string;
-  salesPageCopy: string;
+  analysisId?: string; // Opcional, para rastrear a origem
+  title: string; // Título do Funil
+  lowTicket: {
+    name: string;
+    price: string;
+    type: string;
+    targetAudience: string;
+    pain: string;
+    copy: string;
+  };
+  orderBumps: OrderBump[];
+  // Campos para serem preenchidos depois
+  ebookContent?: string;
+  salesPageCopy?: string;
   createdAt: string;
 }
 
