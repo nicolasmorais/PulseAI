@@ -45,9 +45,10 @@ export async function initializeDatabase() {
     console.log('Esquema do banco de dados verificado com sucesso.');
   } catch (error) {
     await client.query('ROLLBACK');
-    console.error('Erro ao inicializar o esquema do banco de dados:', error);
-    // Não relançamos o erro para não quebrar a aplicação se o DB já estiver criado
-    // mas com algum problema de permissão momentâneo. O log é suficiente.
+    console.error('FATAL: Erro ao inicializar o esquema do banco de dados:', error);
+    // Re-lançar o erro é crucial. Se o banco de dados não puder ser inicializado,
+    // a aplicação não deve continuar, pois estará em um estado quebrado.
+    throw new Error('Falha ao inicializar o banco de dados. A aplicação não pode continuar.');
   } finally {
     client.release();
   }
