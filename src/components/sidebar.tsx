@@ -17,16 +17,13 @@ export function Sidebar() {
 
   return (
     <aside className="w-64 flex-shrink-0 border-r border-sidebar-border bg-sidebar text-sidebar-foreground flex flex-col">
-      <div className="p-4 border-b border-sidebar-border flex flex-col items-center text-center">
+      <div className="p-4 border-b border-sidebar-border flex flex-col items-center">
         <Image
           src="https://iv2jb3repd5xzuuy.public.blob.vercel-storage.com/c8093d73-3d60-4dfb-8203-5496220550ce-0PUV2p1YshrJhgdkbOAFqWtI1KzyKc.png"
           alt="ProductFlow Logo"
           width={48}
           height={48}
-          className="mb-3"
         />
-        <h1 className="text-xl font-bold">ProductFlow</h1>
-        <p className="text-sm text-sidebar-foreground/80">Internal Tool</p>
       </div>
       <nav className="flex-grow p-4">
         <ul className="space-y-2">
