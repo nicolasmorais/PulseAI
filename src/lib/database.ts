@@ -30,12 +30,21 @@ interface Analysis {
   // Futuramente, podemos armazenar as 10 ideias geradas aqui
 }
 
+// Definindo a estrutura de um Prompt
+interface Prompt {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: string;
+}
+
 
 // Estendendo o esquema do banco de dados
 interface DbSchema {
   examples: { id: number; name: string; createdAt: string }[];
   analyses: Analysis[];
   projects: Project[];
+  prompts: Prompt[];
 }
 
 const DB_FILE_NAME = 'db.json';
@@ -61,7 +70,7 @@ export async function getDb(): Promise<Low<DbSchema>> {
 
     const adapter = new JSONFile<DbSchema>(DB_FULL_PATH);
     // Inicializando com as novas coleções vazias
-    dbInstance = new Low<DbSchema>(adapter, { examples: [], analyses: [], projects: [] });
+    dbInstance = new Low<DbSchema>(adapter, { examples: [], analyses: [], projects: [], prompts: [] });
 
     await dbInstance.read();
 
