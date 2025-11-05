@@ -20,33 +20,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'As variáveis de ambiente da API DeepSeek não estão configuradas.' }, { status: 500 });
     }
 
-    // 1. Chamar a API da DeepSeek
-    const systemPrompt = `
-      Você é um especialista em marketing digital e criação de produtos digitais.
-      Sua tarefa é analisar uma lista de comentários de um vídeo do YouTube e um prompt do usuário para gerar 10 ideias de produtos digitais (como ebooks, desafios, guias, etc.).
-
-      Para cada ideia, forneça:
-      - **Nome do Produto:** Um título atraente.
-      - **Tipo:** (Ebook, Desafio de 7 dias, Guia Prático, etc.).
-      - **Público-Alvo:** Quem se beneficiaria mais com este produto.
-      - **Dor Principal:** Qual problema específico o produto resolve.
-      - **Preço Sugerido:** Um valor em BRL (ex: R$ 27, R$ 47, R$ 97).
-
-      Formate a saída de forma clara e organizada, usando markdown.
-    `;
-
-    const userContent = `
-      **Comentários do YouTube:**
-      ---
-      ${comments}
-      ---
-
-      **Prompt do Usuário:**
-      ---
-      ${prompt}
-      ---
-    `;
-
+    // 1. Chamar a API da DeepSeek usando o prompt do usuário como instrução do sistema
     const response = await fetch(`${deepseekApiUrl}/chat/completions`, {
       method: 'POST',
       headers: {
@@ -56,10 +30,10 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         model: 'deepseek-chat',
         messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userContent },
+          { role: 'system', content: prompt }, // O prompt do usuário agora é a instrução principal
+          { role: 'user', content: comments }, // Os comentários são os dados a serem analisados
         ],
-        max_tokens: 2048,
+        max_tokens: 3000, // Aumentado para permitir respostas mais longas e detalhadas
         temperature: 0.7,
       }),
     });

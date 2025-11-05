@@ -45,8 +45,9 @@ export default function NewIdeaPage() {
       
       toast.success("Ideias de produtos geradas com sucesso!");
       setGeneratedIdeas(result.ideas);
-      setComments("");
-      setPrompt("");
+      // Não vamos limpar os campos para permitir ajustes finos no prompt
+      // setComments("");
+      // setPrompt("");
 
     } catch (error: any) {
       toast.error(error.message || "Ocorreu um erro ao se comunicar com a IA.");
@@ -85,8 +86,8 @@ export default function NewIdeaPage() {
               <Label htmlFor="prompt">Prompt (obrigatório)</Label>
               <Textarea
                 id="prompt"
-                placeholder="Direcione a IA com um prompt específico. Ex: 'Foque em dores sobre produtividade para iniciantes'."
-                className="min-h-[100px]"
+                placeholder="Cole aqui o seu prompt detalhado. Defina a persona da IA, o formato da resposta e as regras que ela deve seguir. Quanto mais específico, melhor o resultado."
+                className="min-h-[150px]"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 required
@@ -99,7 +100,7 @@ export default function NewIdeaPage() {
                   Processando...
                 </>
               ) : (
-                "Gerar 10 Ideias de Produtos"
+                "Gerar Ideias de Produtos"
               )}
             </Button>
           </form>
