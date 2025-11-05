@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 import { getDbPool } from '@/lib/db';
 import { randomUUID } from 'crypto';
+import { initializeDatabase } from '@/lib/schema';
 
 // GET - Listar todos os projetos
 export async function GET() {
   try {
+    if (process.env.POSTGRES_URL) {
+      await initializeDatabase();
+    }
     const pool = getDbPool();
     const { rows } = await pool.query('SELECT * FROM projects ORDER BY "createdAt" DESC');
     return NextResponse.json(rows);
@@ -17,6 +21,9 @@ export async function GET() {
 // POST - Criar um novo projeto
 export async function POST(request: Request) {
   try {
+    if (process.env.POSTGRES_URL) {
+      await initializeDatabase();
+    }
     const { funnelTitle, lowTicket, orderBumps, analysisId } = await request.json();
 
     if (!funnelTitle || !lowTicket || !orderBumps) {

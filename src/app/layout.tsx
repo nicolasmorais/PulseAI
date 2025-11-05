@@ -3,7 +3,6 @@ import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Sidebar } from "@/components/sidebar";
 import { Toaster } from "@/components/ui/sonner";
-import { initializeDatabase } from "@/lib/schema";
 
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
@@ -12,16 +11,11 @@ export const metadata: Metadata = {
   description: "Geração de Produtos com IA",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Inicializa o banco de dados no lado do servidor se a URL estiver configurada
-  if (process.env.POSTGRES_URL) {
-    await initializeDatabase();
-  }
-
   return (
     <html lang="pt-BR">
       <body className={spaceGrotesk.className}>

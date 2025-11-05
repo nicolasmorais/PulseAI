@@ -1,9 +1,15 @@
 import { NextResponse } from 'next/server';
 import { getDbPool } from '@/lib/db';
 import { randomUUID } from 'crypto';
+import { initializeDatabase } from '@/lib/schema';
 
 export async function POST(request: Request) {
   try {
+    // Garante que o banco de dados e as tabelas estão prontos
+    if (process.env.POSTGRES_URL) {
+      await initializeDatabase();
+    }
+
     const { comments, prompt } = await request.json();
 
     if (!comments || comments.length < 100) {

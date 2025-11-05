@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
 import { getDbPool } from '@/lib/db';
 import { randomUUID } from 'crypto';
+import { initializeDatabase } from '@/lib/schema';
 
 export async function GET() {
   try {
+    if (process.env.POSTGRES_URL) {
+      await initializeDatabase();
+    }
     const pool = getDbPool();
     const { rows } = await pool.query('SELECT * FROM prompts ORDER BY "createdAt" DESC');
     return NextResponse.json(rows);
@@ -15,6 +19,9 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    if (process.env.POSTGRES_URL) {
+      await initializeDatabase();
+    }
     const { title, content } = await request.json();
 
     if (!title || !content) {
