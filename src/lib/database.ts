@@ -27,7 +27,7 @@ interface Analysis {
   comments: string;
   prompt: string;
   createdAt: string;
-  // Futuramente, podemos armazenar as 10 ideias geradas aqui
+  generatedIdeas?: string; // Campo para armazenar as ideias da IA
 }
 
 // Definindo a estrutura de um Prompt

@@ -13,6 +13,7 @@ export default function NewIdeaPage() {
   const [comments, setComments] = useState("");
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [generatedIdeas, setGeneratedIdeas] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -26,7 +27,8 @@ export default function NewIdeaPage() {
       return;
     }
     setIsLoading(true);
-    toast.info("Enviando dados para geração de ideias...");
+    setGeneratedIdeas(null);
+    toast.info("Analisando dados e gerando ideias com a IA...");
 
     try {
       const response = await fetch('/api/analyses', {
@@ -35,20 +37,19 @@ export default function NewIdeaPage() {
         body: JSON.stringify({ comments, prompt }),
       });
 
+      const result = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Falha ao criar a análise.');
+        throw new Error(result.message || 'Falha ao gerar as ideias.');
       }
       
-      const result = await response.json();
-      toast.success("Dados recebidos! Gerando ideias de produtos...");
-      
-      console.log("Análise criada com ID:", result.id);
+      toast.success("Ideias de produtos geradas com sucesso!");
+      setGeneratedIdeas(result.ideas);
       setComments("");
       setPrompt("");
 
     } catch (error: any) {
-      toast.error(error.message || "Ocorreu um erro ao enviar os dados.");
+      toast.error(error.message || "Ocorreu um erro ao se comunicar com a IA.");
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -104,6 +105,21 @@ export default function NewIdeaPage() {
           </form>
         </CardContent>
       </Card>
+
+      {generatedIdeas && (
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle>✨ Ideias Geradas pela IA</CardTitle>
+            <CardDescription>Aqui estão as ideias de produtos com base nos dados fornecidos.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div
+              className="prose prose-sm max-w-none"
+              dangerouslySetInnerHTML={{ __html: generatedIdeas.replace(/\n/g, '<br />') }}
+            />
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

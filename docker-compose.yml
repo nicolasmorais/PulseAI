@@ -31,6 +31,8 @@ services:
       # EXTERNAL_API_URL_SERVICE1: "https://api.your-primary-service.com"
       # EXTERNAL_API_URL_SERVICE2: "https://api.your-payment-gateway.com"
       # WEATHER_API_URL: "https://api.your-weather-provider.com/v1"
+      # DEEPSEEK_API_URL: "https://api.deepseek.com"
+      # DEEPSEEK_API_KEY: "your_deepseek_api_key_here"
 
     # Restart policy for the container
     restart: unless-stopped
