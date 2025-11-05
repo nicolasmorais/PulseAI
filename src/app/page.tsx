@@ -16,13 +16,13 @@ export default function Dashboard() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <PlusSquare className="h-6 w-6 text-primary" />
-              <span>Ação Rápida</span>
+              <span>Geração de Ideias</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="mb-4 text-gray-600">Inicie a criação de um novo produto a partir de comentários.</p>
+            <p className="mb-4 text-gray-600">Use IA para gerar ideias de produtos a partir de comentários.</p>
             <Button asChild className="w-full">
-              <Link href="/new-analysis">Nova Análise</Link>
+              <Link href="/new-idea">Gerar Novas Ideias</Link>
             </Button>
           </CardContent>
         </Card>

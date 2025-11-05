@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: Home },
-  { href: "/new-analysis", label: "Nova Análise", icon: PlusSquare },
+  { href: "/new-idea", label: "Geração de Ideias", icon: PlusSquare },
   { href: "/projects", label: "Meus Projetos", icon: FolderKanban },
   { href: "/history", label: "Histórico", icon: History },
 ];

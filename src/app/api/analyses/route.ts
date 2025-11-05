@@ -5,7 +5,7 @@ import { randomUUID } from 'crypto';
 export async function POST(request: Request) {
   try {
     const db = await getDb();
-    const { comments, videoTranscript, videoUrl } = await request.json();
+    const { comments, prompt, videoTranscript, videoUrl } = await request.json();
 
     if (!comments || comments.length < 100) {
       return NextResponse.json({ message: 'Comentários são obrigatórios e devem ter no mínimo 100 caracteres.' }, { status: 400 });
@@ -14,6 +14,7 @@ export async function POST(request: Request) {
     const newAnalysis = {
       id: randomUUID(),
       comments,
+      prompt: prompt || '',
       videoTranscript: videoTranscript || '',
       videoUrl: videoUrl || '',
       createdAt: new Date().toISOString(),

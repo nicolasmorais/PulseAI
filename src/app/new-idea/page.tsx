@@ -10,8 +10,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
-export default function NewAnalysisPage() {
+export default function NewIdeaPage() {
   const [comments, setComments] = useState("");
+  const [prompt, setPrompt] = useState("");
   const [videoTranscript, setVideoTranscript] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -24,13 +25,13 @@ export default function NewAnalysisPage() {
       return;
     }
     setIsLoading(true);
-    toast.info("Enviando análise para processamento...");
+    toast.info("Enviando dados para geração de ideias...");
 
     try {
       const response = await fetch('/api/analyses', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ comments, videoTranscript, videoUrl }),
+        body: JSON.stringify({ comments, prompt, videoTranscript, videoUrl }),
       });
 
       if (!response.ok) {
@@ -38,18 +39,16 @@ export default function NewAnalysisPage() {
       }
       
       const result = await response.json();
-      toast.success("Análise criada! Gerando ideias de produtos...");
+      toast.success("Dados recebidos! Gerando ideias de produtos...");
       
-      // Futuramente, redirecionar para a página de ideias:
-      // router.push(`/analysis/${result.id}/ideas`);
       console.log("Análise criada com ID:", result.id);
-      // Por enquanto, apenas limpamos o formulário
       setComments("");
+      setPrompt("");
       setVideoTranscript("");
       setVideoUrl("");
 
     } catch (error) {
-      toast.error("Ocorreu um erro ao enviar a análise.");
+      toast.error("Ocorreu um erro ao enviar os dados.");
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -59,8 +58,8 @@ export default function NewAnalysisPage() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Nova Análise de Comentários</h1>
-        <p className="text-gray-500">Cole os dados abaixo para gerar ideias de produtos.</p>
+        <h1 className="text-3xl font-bold">Geração de Ideias</h1>
+        <p className="text-gray-500">Cole os dados abaixo para a IA gerar ideias de produtos.</p>
       </div>
       <Card>
         <CardHeader>
@@ -80,6 +79,16 @@ export default function NewAnalysisPage() {
                 required
               />
               <p className="text-sm text-gray-500">{comments.length} / 100 caracteres mínimos</p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="prompt">Prompt (opcional)</Label>
+              <Textarea
+                id="prompt"
+                placeholder="Direcione a IA com um prompt específico. Ex: 'Foque em dores sobre produtividade para iniciantes'."
+                className="min-h-[100px]"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="transcript">Transcrição do Vídeo (opcional)</Label>
