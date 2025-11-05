@@ -24,6 +24,10 @@ export default function NewIdeaPage() {
       toast.error("Por favor, insira pelo menos 100 caracteres nos comentários.");
       return;
     }
+    if (!prompt) {
+      toast.error("O campo de prompt é obrigatório.");
+      return;
+    }
     setIsLoading(true);
     toast.info("Enviando dados para geração de ideias...");
 
@@ -35,7 +39,8 @@ export default function NewIdeaPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Falha ao criar a análise.');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Falha ao criar a análise.');
       }
       
       const result = await response.json();
@@ -47,8 +52,8 @@ export default function NewIdeaPage() {
       setVideoTranscript("");
       setVideoUrl("");
 
-    } catch (error) {
-      toast.error("Ocorreu um erro ao enviar os dados.");
+    } catch (error: any) {
+      toast.error(error.message || "Ocorreu um erro ao enviar os dados.");
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -81,13 +86,14 @@ export default function NewIdeaPage() {
               <p className="text-sm text-gray-500">{comments.length} / 100 caracteres mínimos</p>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="prompt">Prompt (opcional)</Label>
+              <Label htmlFor="prompt">Prompt (obrigatório)</Label>
               <Textarea
                 id="prompt"
                 placeholder="Direcione a IA com um prompt específico. Ex: 'Foque em dores sobre produtividade para iniciantes'."
                 className="min-h-[100px]"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
+                required
               />
             </div>
             <div className="space-y-2">

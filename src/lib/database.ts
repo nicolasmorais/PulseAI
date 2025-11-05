@@ -27,7 +27,7 @@ interface Analysis {
   comments: string;
   videoTranscript?: string;
   videoUrl?: string;
-  prompt?: string;
+  prompt: string;
   createdAt: string;
   // Futuramente, podemos armazenar as 10 ideias geradas aqui
 }

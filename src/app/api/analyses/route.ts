@@ -11,10 +11,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'Comentários são obrigatórios e devem ter no mínimo 100 caracteres.' }, { status: 400 });
     }
 
+    if (!prompt) {
+      return NextResponse.json({ message: 'O campo de prompt é obrigatório.' }, { status: 400 });
+    }
+
     const newAnalysis = {
       id: randomUUID(),
       comments,
-      prompt: prompt || '',
+      prompt,
       videoTranscript: videoTranscript || '',
       videoUrl: videoUrl || '',
       createdAt: new Date().toISOString(),
