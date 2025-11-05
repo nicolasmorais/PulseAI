@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getDb } from '@/lib/database';
+import { getDbPool } from '@/lib/db';
 import { randomUUID } from 'crypto';
 
 export async function POST(request: Request) {
@@ -20,7 +20,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'As variáveis de ambiente da API DeepSeek não estão configuradas.' }, { status: 500 });
     }
 
-    // 1. Chamar a API da DeepSeek usando o prompt do usuário como instrução do sistema
     const response = await fetch(`${deepseekApiUrl}/chat/completions`, {
       method: 'POST',
       headers: {
@@ -30,10 +29,10 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         model: 'deepseek-chat',
         messages: [
-          { role: 'system', content: prompt }, // O prompt do usuário agora é a instrução principal
-          { role: 'user', content: comments }, // Os comentários são os dados a serem analisados
+          { role: 'system', content: prompt },
+          { role: 'user', content: comments },
         ],
-        max_tokens: 3000, // Aumentado para permitir respostas mais longas e detalhadas
+        max_tokens: 3000,
         temperature: 0.7,
       }),
     });
@@ -47,18 +46,19 @@ export async function POST(request: Request) {
     const result = await response.json();
     const generatedIdeas = result.choices[0].message.content;
 
-    // 2. Salvar a análise e as ideias no banco de dados
-    const db = await getDb();
     const newAnalysis = {
       id: randomUUID(),
       comments,
       prompt,
       generatedIdeas,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date(),
     };
 
-    db.data.analyses.push(newAnalysis);
-    await db.write();
+    const pool = getDbPool();
+    await pool.query(
+      'INSERT INTO analyses (id, comments, prompt, "generatedIdeas", "createdAt") VALUES ($1, $2, $3, $4, $5)',
+      [newAnalysis.id, newAnalysis.comments, newAnalysis.prompt, newAnalysis.generatedIdeas, newAnalysis.createdAt]
+    );
 
     return NextResponse.json({
       message: 'Ideias geradas com sucesso!',
