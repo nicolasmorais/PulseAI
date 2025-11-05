@@ -21,8 +21,8 @@ export function Sidebar() {
         <Image
           src="https://iv2jb3repd5xzuuy.public.blob.vercel-storage.com/c8093d73-3d60-4dfb-8203-5496220550ce-0PUV2p1YshrJhgdkbOAFqWtI1KzyKc.png"
           alt="ProductFlow Logo"
-          width={96}
-          height={96}
+          width={128}
+          height={128}
         />
       </div>
       <nav className="flex-grow p-4">
