@@ -1,6 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'iv2jb3repd5xzuuy.public.blob.vercel-storage.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
   webpack: (config) => {
     if (process.env.NODE_ENV === "development") {
       config.module.rules.push({
@@ -50,4 +60,3 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
-
