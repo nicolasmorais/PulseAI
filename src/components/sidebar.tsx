@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, PlusSquare, FolderKanban, History } from "lucide-react";
+import { PlusSquare, FolderKanban, History } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { href: "/", label: "Dashboard", icon: Home },
   { href: "/new-idea", label: "Geração de Ideias", icon: PlusSquare },
   { href: "/projects", label: "Meus Projetos", icon: FolderKanban },
   { href: "/history", label: "Histórico", icon: History },
