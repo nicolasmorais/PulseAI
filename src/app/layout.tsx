@@ -7,8 +7,8 @@ import { Toaster } from "@/components/ui/sonner";
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ProductFlow Internal",
-  description: "Gerador de Produtos Digitais com IA",
+  title: "PULSEAI - GERAÇÃO DE PRODUTOS COM IA",
+  description: "Geração de Produtos com IA",
 };
 
 export default function RootLayout({
