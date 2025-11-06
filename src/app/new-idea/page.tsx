@@ -1,24 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Loader2, Wand2, ArrowRight } from "lucide-react";
-import { parseGeneratedIdeas, ParsedFunnel } from "@/lib/utils";
+import { Loader2, Wand2 } from "lucide-react";
 
 export default function NewIdeaPage() {
   const [comments, setComments] = useState("");
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isCreatingProject, setIsCreatingProject] = useState<string | null>(null);
-  const [analysisId, setAnalysisId] = useState<string | null>(null);
-  const [parsedFunnels, setParsedFunnels] = useState<ParsedFunnel[]>([]);
-  const router = useRouter();
+  const [generatedIdeas, setGeneratedIdeas] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +25,7 @@ export default function NewIdeaPage() {
       return;
     }
     setIsLoading(true);
-    setParsedFunnels([]);
+    setGeneratedIdeas("");
     toast.info("Analisando dados e gerando ideias com a IA...");
 
     try {
@@ -48,40 +42,13 @@ export default function NewIdeaPage() {
       }
       
       toast.success("Ideias de produtos geradas com sucesso!");
-      setAnalysisId(result.id);
-      const funnels = parseGeneratedIdeas(result.ideas);
-      setParsedFunnels(funnels);
+      setGeneratedIdeas(result.ideas);
 
     } catch (error: any) {
       toast.error(error.message || "Ocorreu um erro ao se comunicar com a IA.");
       console.error(error);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleCreateProject = async (funnel: ParsedFunnel) => {
-    setIsCreatingProject(funnel.funnelTitle);
-    toast.info(`Criando projeto para "${funnel.funnelTitle}"...`);
-    try {
-      const response = await fetch('/api/projects', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...funnel, analysisId }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Falha ao criar o projeto.');
-      }
-      
-      toast.success("Projeto criado com sucesso! Redirecionando...");
-      router.push('/projects');
-
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setIsCreatingProject(null);
     }
   };
 
@@ -114,50 +81,21 @@ export default function NewIdeaPage() {
         </CardContent>
       </Card>
 
-      {parsedFunnels.length > 0 && (
+      {generatedIdeas && (
         <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-4">✨ Ideias Geradas</h2>
-          <div className="space-y-6">
-            {parsedFunnels.map((funnel, index) => (
-              <Card key={index}>
-                <CardHeader>
-                  <CardTitle>{funnel.funnelTitle}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* Low Ticket */}
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="font-semibold">{funnel.lowTicket.name}</h3>
-                        <p className="text-sm text-gray-500">{funnel.lowTicket.type}</p>
-                      </div>
-                      <Badge variant="secondary">R$ {funnel.lowTicket.price}</Badge>
-                    </div>
-                    <p className="text-sm mt-2 italic text-gray-600">"{funnel.lowTicket.copy}"</p>
-                  </div>
-                  {/* Order Bumps */}
-                  <div className="space-y-2">
-                    <h4 className="font-semibold text-sm">Order Bumps:</h4>
-                    {funnel.orderBumps.map((bump, i) => (
-                      <div key={i} className="flex justify-between items-center p-2 border-l-4 rounded-r-md bg-gray-50">
-                        <div>
-                          <p className="text-sm font-medium">{bump.name}</p>
-                          <p className="text-xs text-gray-500">{bump.type}</p>
-                        </div>
-                        <Badge variant="outline">R$ {bump.price}</Badge>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button className="w-full" onClick={() => handleCreateProject(funnel)} disabled={!!isCreatingProject}>
-                    {isCreatingProject === funnel.funnelTitle ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ArrowRight className="mr-2 h-4 w-4" />}
-                    {isCreatingProject === funnel.funnelTitle ? 'Criando Projeto...' : 'Gerar Projeto com este Funil'}
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>✨ Resposta da IA</CardTitle>
+              <CardDescription>Abaixo está o texto completo gerado pela inteligência artificial.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Textarea
+                readOnly
+                className="min-h-[300px] bg-gray-50 text-gray-800"
+                value={generatedIdeas}
+              />
+            </CardContent>
+          </Card>
         </div>
       )}
     </div>
