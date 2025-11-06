@@ -27,12 +27,12 @@ export function Sidebar() {
 
   return (
     <aside className="w-64 flex-shrink-0 border-r border-sidebar-border bg-sidebar text-sidebar-foreground flex flex-col">
-      <div className="h-16 flex items-center px-6 border-b border-sidebar-border">
+      <div className="h-24 flex items-center justify-center p-6">
         <Link href="/" className="flex items-center gap-2">
           <Image
             src="https://iv2jb3repd5xzuuy.public.blob.vercel-storage.com/c8093d73-3d60-4dfb-8203-5496220550ce-0PUV2p1YshrJhgdkbOAFqWtI1KzyKc.png"
-            width={120}
-            height={40}
+            width={150}
+            height={50}
             alt="PulseAI Logo"
           />
         </Link>
