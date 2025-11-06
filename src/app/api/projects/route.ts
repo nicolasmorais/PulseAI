@@ -24,7 +24,7 @@ export async function POST(request: Request) {
     if (process.env.POSTGRES_URL) {
       await initializeDatabase();
     }
-    const { funnelTitle, lowTicket, orderBumps, analysisId } = await request.json();
+    const { funnelTitle, lowTicket, orderBumps, analysisId, rawFunnelText } = await request.json();
 
     if (!funnelTitle || !lowTicket || !orderBumps) {
       return NextResponse.json({ message: 'Dados do funil incompletos.' }, { status: 400 });
@@ -36,14 +36,15 @@ export async function POST(request: Request) {
       title: funnelTitle,
       lowTicket,
       orderBumps,
+      rawFunnelText,
       createdAt: new Date(),
     };
 
     const pool = getDbPool();
     // Os objetos lowTicket e orderBumps precisam ser convertidos para string JSON para serem inseridos nas colunas JSONB
     await pool.query(
-      'INSERT INTO projects (id, "analysisId", title, "lowTicket", "orderBumps", "createdAt") VALUES ($1, $2, $3, $4, $5, $6)',
-      [newProject.id, newProject.analysisId, newProject.title, JSON.stringify(newProject.lowTicket), JSON.stringify(newProject.orderBumps), newProject.createdAt]
+      'INSERT INTO projects (id, "analysisId", title, "lowTicket", "orderBumps", "rawFunnelText", "createdAt") VALUES ($1, $2, $3, $4, $5, $6, $7)',
+      [newProject.id, newProject.analysisId, newProject.title, JSON.stringify(newProject.lowTicket), JSON.stringify(newProject.orderBumps), newProject.rawFunnelText, newProject.createdAt]
     );
 
     return NextResponse.json({ message: 'Projeto criado com sucesso', project: newProject }, { status: 201 });

@@ -28,6 +28,7 @@ export async function initializeDatabase() {
         "orderBumps" JSONB NOT NULL,
         "ebookContent" TEXT,
         "salesPageCopy" TEXT,
+        "rawFunnelText" TEXT,
         "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
     `);
