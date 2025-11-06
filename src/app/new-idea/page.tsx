@@ -41,8 +41,13 @@ export default function NewIdeaPage() {
         throw new Error(result.message || 'Falha ao gerar as ideias.');
       }
       
-      toast.success("Ideias de produtos geradas com sucesso!");
-      setGeneratedIdeas(result.ideas);
+      if (result.ideas && typeof result.ideas === 'string' && result.ideas.trim().length > 0) {
+        toast.success("Ideias de produtos geradas com sucesso!");
+        setGeneratedIdeas(result.ideas);
+      } else {
+        toast.warning("A IA retornou uma resposta vazia.");
+        setGeneratedIdeas("A IA retornou uma resposta vazia. Por favor, tente novamente com um prompt diferente ou verifique o status da API.");
+      }
 
     } catch (error: any) {
       toast.error(error.message || "Ocorreu um erro ao se comunicar com a IA.");
