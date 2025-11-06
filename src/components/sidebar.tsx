@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { PlusSquare, FolderKanban, History, Bookmark, Server } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -19,14 +18,7 @@ export function Sidebar() {
 
   return (
     <aside className="w-64 flex-shrink-0 border-r border-sidebar-border bg-sidebar text-sidebar-foreground flex flex-col">
-      <div className="p-6 flex flex-col items-center">
-        <Image
-          src="https://iv2jb3repd5xzuuy.public.blob.vercel-storage.com/c8093d73-3d60-4dfb-8203-5496220550ce-0PUV2p1YshrJhgdkbOAFqWtI1KzyKc.png"
-          alt="PULSEAI Logo"
-          width={128}
-          height={128}
-        />
-      </div>
+      <div className="h-16" />
       <nav className="flex-grow p-4">
         <ul className="space-y-2">
           {navItems.map((item) => (
