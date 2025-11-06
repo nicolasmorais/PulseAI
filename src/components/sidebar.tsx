@@ -16,7 +16,13 @@ export function Sidebar() {
 
   return (
     <aside className="w-64 flex-shrink-0 border-r border-sidebar-border bg-sidebar text-sidebar-foreground flex flex-col">
-      <div className="h-16" />
+      <div className="h-16 flex items-center px-6 border-b border-sidebar-border">
+        <Link href="/" className="flex items-center gap-2">
+          <span className="text-xl font-bold tracking-wider text-sidebar-foreground">
+            PULSEAI
+          </span>
+        </Link>
+      </div>
       <nav className="flex-grow p-4">
         <ul className="space-y-2">
           {navItems.map((item) => (
