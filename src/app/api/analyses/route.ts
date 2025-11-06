@@ -4,6 +4,7 @@ import { randomUUID } from 'crypto';
 import { initializeDatabase } from '@/lib/schema';
 
 export async function POST(request: Request) {
+  console.log("--- [API /api/analyses] Rota POST recebida ---");
   try {
     // Garante que o banco de dados e as tabelas estão prontos
     if (process.env.POSTGRES_URL) {
@@ -11,6 +12,7 @@ export async function POST(request: Request) {
     }
 
     const { comments, prompt } = await request.json();
+    console.log("--- [API /api/analyses] Corpo da requisição analisado ---");
 
     if (!comments || comments.length < 100) {
       return NextResponse.json({ message: 'Comentários são obrigatórios e devem ter no mínimo 100 caracteres.' }, { status: 400 });
@@ -23,9 +25,11 @@ export async function POST(request: Request) {
     const deepseekApiUrl = process.env.DEEPSEEK_API_URL;
 
     if (!deepseekApiKey || !deepseekApiUrl) {
+      console.error("--- [API /api/analyses] Variáveis de ambiente da API DeepSeek não configuradas. ---");
       return NextResponse.json({ message: 'As variáveis de ambiente da API DeepSeek não estão configuradas.' }, { status: 500 });
     }
 
+    console.log("--- [API /api/analyses] Chamando a API DeepSeek... ---");
     const response = await fetch(`${deepseekApiUrl}/chat/completions`, {
       method: 'POST',
       headers: {
@@ -43,14 +47,18 @@ export async function POST(request: Request) {
       }),
     });
 
+    console.log(`--- [API /api/analyses] Status da resposta da API DeepSeek: ${response.status} ---`);
+
     if (!response.ok) {
       const errorBody = await response.text();
-      console.error('Erro da API DeepSeek:', errorBody);
+      console.error('--- [API /api/analyses] Erro da API DeepSeek:', errorBody);
       return NextResponse.json({ message: `Erro ao se comunicar com a API DeepSeek: ${response.statusText}` }, { status: response.status });
     }
 
     const result = await response.json();
-    const generatedIdeas = result.choices[0].message.content;
+    console.log('--- [API /api/analyses] Resposta completa da API DeepSeek:', JSON.stringify(result, null, 2));
+
+    const generatedIdeas = result.choices?.[0]?.message?.content || "";
 
     const newAnalysis = {
       id: randomUUID(),
@@ -65,7 +73,8 @@ export async function POST(request: Request) {
       'INSERT INTO analyses (id, comments, prompt, "generatedIdeas", "createdAt") VALUES ($1, $2, $3, $4, $5)',
       [newAnalysis.id, newAnalysis.comments, newAnalysis.prompt, newAnalysis.generatedIdeas, newAnalysis.createdAt]
     );
-
+    
+    console.log("--- [API /api/analyses] Análise salva no banco de dados. Enviando resposta. ---");
     return NextResponse.json({
       message: 'Ideias geradas com sucesso!',
       id: newAnalysis.id,
@@ -73,7 +82,7 @@ export async function POST(request: Request) {
     }, { status: 201 });
 
   } catch (error) {
-    console.error('Falha ao criar análise:', error);
+    console.error('--- [API /api/analyses] Erro inesperado na rota:', error);
     return NextResponse.json({ message: 'Erro interno do servidor' }, { status: 500 });
   }
 }
