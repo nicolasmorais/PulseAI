@@ -2,16 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PlusSquare, FolderKanban, History, Bookmark, Server, FolderPlus } from "lucide-react";
+import { PlusSquare, FolderKanban, Bookmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/new-idea", label: "Geração de Ideias", icon: PlusSquare },
-  { href: "/new-project", label: "Novo Projeto", icon: FolderPlus },
   { href: "/projects", label: "Meus Projetos", icon: FolderKanban },
-  { href: "/history", label: "Histórico", icon: History },
   { href: "/saved-prompts", label: "Prompts Salvos", icon: Bookmark },
-  { href: "/status", label: "Status do Sistema", icon: Server },
 ];
 
 export function Sidebar() {

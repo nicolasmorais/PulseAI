@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Loader2, FolderKanban } from "lucide-react";
+import { Loader2, FolderKanban, PlusCircle } from "lucide-react";
 
 interface OrderBump {
   name: string;
@@ -49,9 +51,17 @@ export default function ProjectsPage() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Meus Projetos</h1>
-        <p className="text-gray-500">Aqui você verá a lista de todos os produtos criados.</p>
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold">Meus Projetos</h1>
+          <p className="text-gray-500">Aqui você verá a lista de todos os produtos criados.</p>
+        </div>
+        <Link href="/new-project" passHref>
+          <Button>
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Criar Novo Projeto
+          </Button>
+        </Link>
       </div>
 
       {isLoading ? (
