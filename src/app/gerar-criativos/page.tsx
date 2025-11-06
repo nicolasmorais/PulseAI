@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Loader2, Wand2, Clipboard } from "lucide-react";
 
@@ -30,21 +30,75 @@ REGRAS DE OURO:
 
 Agora, analise as informações a seguir e gere os 5 criativos.`;
 
+interface OrderBump {
+  name: string;
+  price: string;
+  type: string;
+}
+
+interface Project {
+  id: string;
+  title: string;
+  lowTicket: {
+    name: string;
+    price: string;
+    type: string;
+  };
+  orderBumps: OrderBump[];
+  createdAt: string;
+}
+
 export default function GerarCriativosPage() {
-  const [productInfo, setProductInfo] = useState("");
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [selectedProjectId, setSelectedProjectId] = useState("");
+  const [isFetchingProjects, setIsFetchingProjects] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [criativos, setCriativos] = useState<string[]>([]);
 
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch('/api/projects');
+        if (!response.ok) {
+          throw new Error("Falha ao buscar os projetos.");
+        }
+        const data = await response.json();
+        setProjects(data);
+      } catch (error: any) {
+        toast.error(error.message);
+      } finally {
+        setIsFetchingProjects(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (productInfo.length < 50) {
-      toast.error("Por favor, descreva seu produto com pelo menos 50 caracteres.");
+    if (!selectedProjectId) {
+      toast.error("Por favor, selecione um projeto para gerar os criativos.");
       return;
     }
     
     setIsLoading(true);
     setCriativos([]);
     toast.info("Gerando criativos com a IA...");
+
+    const selectedProject = projects.find(p => p.id === selectedProjectId);
+    if (!selectedProject) {
+        toast.error("Projeto selecionado não encontrado.");
+        setIsLoading(false);
+        return;
+    }
+
+    const productInfo = `
+      Produto: ${selectedProject.lowTicket.name}
+      Tipo: ${selectedProject.lowTicket.type}
+      Preço: R$ ${selectedProject.lowTicket.price}
+      Descrição do Funil: ${selectedProject.title}
+      Bônus (Order Bumps): ${selectedProject.orderBumps.map(b => b.name).join(', ')}
+    `;
 
     try {
       const response = await fetch('/api/criativos', {
@@ -89,21 +143,37 @@ export default function GerarCriativosPage() {
     <div className="max-w-4xl mx-auto">
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Gerador de Criativos</h1>
-        <p className="text-gray-500">Descreva seu produto e a IA irá gerar copys para seus anúncios.</p>
+        <p className="text-gray-500">Selecione um projeto e a IA irá gerar copys para seus anúncios.</p>
       </div>
       <Card>
         <CardHeader>
-          <CardTitle>Informações do Produto</CardTitle>
-          <CardDescription>Forneça detalhes sobre o produto, público-alvo e a oferta para gerar copys mais eficazes.</CardDescription>
+          <CardTitle>Seleção de Projeto</CardTitle>
+          <CardDescription>Escolha um projeto existente para usar como base na geração das copys.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="product-info">Descrição do Produto/Oferta</Label>
-              <Textarea id="product-info" placeholder="Ex: Ebook 'Foco Total' para criadores de conteúdo que ensina a eliminar distrações. Público: jovens de 20-30 anos. Oferta: R$27." className="min-h-[150px]" value={productInfo} onChange={(e) => setProductInfo(e.target.value)} required />
-              <p className="text-sm text-gray-500">{productInfo.length} / 50 caracteres mínimos</p>
+              <Label htmlFor="project-select">Selecione um Projeto</Label>
+              <Select onValueChange={setSelectedProjectId} value={selectedProjectId} disabled={isFetchingProjects}>
+                <SelectTrigger id="project-select">
+                  <SelectValue placeholder={isFetchingProjects ? "Carregando projetos..." : "Escolha um projeto"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {projects.length > 0 ? (
+                    projects.map(project => (
+                      <SelectItem key={project.id} value={project.id}>
+                        {project.title}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="no-projects" disabled>
+                      Nenhum projeto encontrado
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
             </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full" disabled={isLoading || isFetchingProjects || !selectedProjectId}>
               {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Gerando...</> : <><Wand2 className="mr-2 h-4 w-4" /> Gerar Criativos</>}
             </Button>
           </form>
