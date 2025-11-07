@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2020",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -18,10 +19,8 @@
         "name": "next"
       }
     ],
-    // Essential for absolute imports from 'src'
-    "baseUrl": ".", // This tells TypeScript to resolve modules relative to the project root
     "paths": {
-      "@/*": ["./src/*"] // This maps '@/anything' to './src/anything'
+      "@/*": ["./src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
