@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { PlusSquare, FolderKanban, Bookmark, Sparkles } from "lucide-react";
+import { PlusSquare, FolderKanban, Bookmark } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navSections = [
@@ -11,7 +11,6 @@ const navSections = [
     title: "Principal",
     items: [
       { href: "/new-idea", label: "Geração de Ideias", icon: PlusSquare },
-      { href: "/gerar-criativos", label: "Gerar Criativos", icon: Sparkles },
       { href: "/projects", label: "Meus Projetos", icon: FolderKanban },
     ],
   },
