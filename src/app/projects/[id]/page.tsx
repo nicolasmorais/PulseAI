@@ -25,6 +25,7 @@ interface Project {
   orderBumps: OrderBump[];
   createdAt: string;
   rawFunnelText?: string;
+  salesPageCopy?: string;
 }
 
 export default function ProjectDetailPage() {
@@ -32,6 +33,7 @@ export default function ProjectDetailPage() {
   const id = params.id as string;
   const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isGeneratingCopy, setIsGeneratingCopy] = useState(false);
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -52,6 +54,28 @@ export default function ProjectDetailPage() {
 
     fetchProject();
   }, [id]);
+
+  const handleGenerateCopy = async () => {
+    if (!project) return;
+    setIsGeneratingCopy(true);
+    toast.info("Gerando copy com a IA... Isso pode levar um minuto.");
+    try {
+      const response = await fetch(`/api/projects/${id}/generate-copy`, {
+        method: 'POST',
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Falha ao gerar a copy.");
+      }
+      const data = await response.json();
+      setProject((prev) => (prev ? { ...prev, salesPageCopy: data.salesPageCopy } : null));
+      toast.success("Copy da página de vendas gerada com sucesso!");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsGeneratingCopy(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -111,15 +135,37 @@ export default function ProjectDetailPage() {
               <CardTitle>Ações</CardTitle>
             </CardHeader>
             <CardContent>
-              <Button className="w-full" disabled>
-                <Wand2 className="mr-2 h-4 w-4" />
-                Gerar Copy da Página de Vendas
+              <Button 
+                className="w-full" 
+                onClick={handleGenerateCopy}
+                disabled={isGeneratingCopy || !!project.salesPageCopy}
+              >
+                {isGeneratingCopy ? (
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Gerando...</>
+                ) : (
+                  <><Wand2 className="mr-2 h-4 w-4" /> 
+                  {project.salesPageCopy ? 'Copy Gerada' : 'Gerar Copy da Página de Vendas'}
+                  </>
+                )}
               </Button>
             </CardContent>
           </Card>
         </div>
 
-        <div className="md:col-span-2">
+        <div className="md:col-span-2 space-y-6">
+          {project.salesPageCopy && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Copy da Página de Vendas</CardTitle>
+                <CardDescription>Este é o texto gerado pela IA para sua página de vendas.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="whitespace-pre-wrap text-sm text-gray-800 bg-gray-50 p-4 rounded-md max-h-[600px] overflow-y-auto">
+                  {project.salesPageCopy}
+                </div>
+              </CardContent>
+            </Card>
+          )}
           <Card>
             <CardHeader>
               <CardTitle>Texto Original do Funil Gerado</CardTitle>
