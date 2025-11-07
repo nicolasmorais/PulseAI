@@ -28,7 +28,6 @@ export async function initializeDatabase() {
         "orderBumps" JSONB NOT NULL,
         "ebookContent" TEXT,
         "salesPageCopy" TEXT,
-        "rawFunnelText" TEXT,
         "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
     `);
@@ -40,6 +39,12 @@ export async function initializeDatabase() {
         content TEXT NOT NULL,
         "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
+    `);
+
+    // Garante que a coluna "rawFunnelText" exista na tabela de projetos.
+    // Isso é necessário para atualizar bancos de dados que foram criados antes da coluna ser adicionada.
+    await client.query(`
+      ALTER TABLE projects ADD COLUMN IF NOT EXISTS "rawFunnelText" TEXT;
     `);
 
     await client.query('COMMIT');
