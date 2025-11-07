@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Loader2, FolderKanban, PlusCircle } from "lucide-react";
+import { Loader2, FolderKanban, PlusCircle, ArrowRight } from "lucide-react";
 
 interface OrderBump {
   name: string;
@@ -98,6 +98,14 @@ export default function ProjectsPage() {
                   ))}
                 </div>
               </CardContent>
+              <CardFooter>
+                <Link href={`/projects/${project.id}`} passHref className="w-full">
+                  <Button className="w-full">
+                    Abrir Projeto
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+              </CardFooter>
             </Card>
           ))}
         </div>
