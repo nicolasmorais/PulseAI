@@ -124,7 +124,7 @@ export default function NewIdeaPage() {
       if (result.ideas && typeof result.ideas === 'string' && result.ideas.trim().length > 0) {
         const generatedText = result.ideas;
         // Divide o texto em funis individuais usando um padrão mais robusto
-        const parsedFunnels = generatedText.split(/(?=#### \*\*FUNIL \d+:|\*\*FUNIL \d+:)/).filter(p => p.trim().startsWith("#### **FUNIL") || p.trim().startsWith("**FUNIL"));
+        const parsedFunnels = generatedText.split(/(?=#### \*\*FUNIL \d+:|\*\*FUNIL \d+:)/).filter((p: string) => p.trim().startsWith("#### **FUNIL") || p.trim().startsWith("**FUNIL"));
 
         if (parsedFunnels.length > 0) {
           toast.success("Funis de venda gerados com sucesso!");
