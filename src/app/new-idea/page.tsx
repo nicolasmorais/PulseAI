@@ -122,12 +122,17 @@ export default function NewIdeaPage() {
       }
       
       if (result.ideas && typeof result.ideas === 'string' && result.ideas.trim().length > 0) {
-        toast.success("Funis de venda gerados com sucesso!");
-        
         const generatedText = result.ideas;
-        const parsedFunnels = generatedText.match(/Funil de Venda Único #\d:.*?(?=Funil de Venda Único #\d:|$)/gs);
-        
-        setFunnels(parsedFunnels || [generatedText]);
+        // Divide o texto em funis individuais usando um padrão mais robusto
+        const parsedFunnels = generatedText.split(/(?=#### \*\*FUNIL \d+:|\*\*FUNIL \d+:)/).filter(p => p.trim().startsWith("#### **FUNIL") || p.trim().startsWith("**FUNIL"));
+
+        if (parsedFunnels.length > 0) {
+          toast.success("Funis de venda gerados com sucesso!");
+          setFunnels(parsedFunnels);
+        } else {
+          toast.warning("A IA retornou uma resposta, mas não foi possível dividi-la em funis. Exibindo o texto completo.");
+          setFunnels([generatedText]);
+        }
 
       } else {
         toast.warning("A IA retornou uma resposta vazia.");
@@ -148,11 +153,13 @@ export default function NewIdeaPage() {
 
     try {
       const lines = funnelText.split('\n').filter(line => line.trim() !== '');
+      
       const titleLine = lines[0] || '';
-      const funnelTitle = titleLine.replace(/Funil de Venda Único #\d: /, '').trim();
+      const titleMatch = titleLine.match(/"(.*?)"/);
+      const funnelTitle = titleMatch ? titleMatch[1] : 'Novo Projeto de Funil';
 
-      const lowTicketLine = lines.find(line => line.startsWith('LOW TICKET')) || '';
-      const lowTicketNameMatch = lowTicketLine.match(/: (.*)/);
+      const lowTicketLine = lines.find(line => line.includes('LOW TICKET')) || '';
+      const lowTicketNameMatch = lowTicketLine.match(/"(.*?)"/);
       const lowTicketName = lowTicketNameMatch ? lowTicketNameMatch[1].trim() : 'Produto Principal';
       const lowTicketPriceMatch = lowTicketLine.match(/\(R\$(\d+)/);
       const lowTicketPrice = lowTicketPriceMatch ? `${lowTicketPriceMatch[1]}.00` : '47.00';
@@ -164,9 +171,9 @@ export default function NewIdeaPage() {
       };
 
       const orderBumps = lines
-        .filter(line => line.startsWith('BÔNUS'))
+        .filter(line => line.includes('BÔNUS'))
         .map(line => {
-          const nameMatch = line.match(/: (.*)/);
+          const nameMatch = line.match(/"(.*?)"/);
           const name = nameMatch ? nameMatch[1].trim() : 'Bônus Especial';
           return { name, price: '0.00', type: 'Bônus' };
         });
