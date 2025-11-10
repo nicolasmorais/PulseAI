@@ -11,7 +11,7 @@ export async function POST(request: Request) {
       await initializeDatabase();
     }
 
-    const { comments, prompt } = await request.json();
+    const { comments, transcription, prompt } = await request.json();
     console.log("--- [API /api/analyses] Corpo da requisição analisado ---");
 
     if (!comments || comments.length < 100) {
@@ -29,6 +29,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'As variáveis de ambiente da API DeepSeek não estão configuradas.' }, { status: 500 });
     }
 
+    const combinedContent = `
+      **Transcrição do Vídeo:**
+      ${transcription || "Nenhuma transcrição fornecida."}
+
+      ---
+
+      **Comentários do Vídeo:**
+      ${comments}
+    `;
+
     console.log("--- [API /api/analyses] Chamando a API DeepSeek... ---");
     const response = await fetch(`${deepseekApiUrl}/chat/completions`, {
       method: 'POST',
@@ -40,7 +50,7 @@ export async function POST(request: Request) {
         model: 'deepseek-chat',
         messages: [
           { role: 'system', content: prompt },
-          { role: 'user', content: comments },
+          { role: 'user', content: combinedContent },
         ],
         max_tokens: 3000,
         temperature: 0.7,
@@ -62,7 +72,7 @@ export async function POST(request: Request) {
 
     const newAnalysis = {
       id: randomUUID(),
-      comments,
+      comments: combinedContent,
       prompt,
       generatedIdeas,
       createdAt: new Date(),
