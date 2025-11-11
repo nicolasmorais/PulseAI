@@ -46,7 +46,7 @@ O QUE É: A apresentação do seu produto como a ÚNICA saída lógica. Aqui voc
 
 COMO FAZER:
 
-Apresente o produto com um nome PODEROSO: "Apresento o PROTOCOLO ESTÔMACO DE AÇO".
+Apresente o produto com um nome PODEROSO: "Apresento o PROTOCOLO ESTÔMAGO DE AÇO".
 
 Destaque que é FÁCIL, RÁPIDO e BARATO: "Um método passo a passo, 100% natural, que você pode começar hoje mesmo com menos de R$10."
 
@@ -112,12 +112,14 @@ export async function POST(
     const { id } = params;
     const pool = getDbPool();
 
+    // 1. Buscar os dados do projeto
     const projectResult = await pool.query('SELECT * FROM projects WHERE id = $1', [id]);
     if (projectResult.rows.length === 0) {
       return NextResponse.json({ message: 'Projeto não encontrado.' }, { status: 404 });
     }
     const project = projectResult.rows[0];
 
+    // 2. Montar o prompt para a IA
     const userInput = `
       Baseado na estrutura que te passei, gere a copy completa da página de vendas para o seguinte produto. Use o texto original do funil como base para entender o público e a dor.
 
@@ -134,24 +136,24 @@ export async function POST(
       Agora, gere a copy completa, seguindo CADA um dos 9 passos da estrutura.
     `;
 
-    const claudeApiKey = process.env.CLAUDE_API_KEY;
-    const claudeApiUrl = process.env.CLAUDE_API_URL;
+    // 3. Chamar a API da DeepSeek
+    const deepseekApiKey = process.env.DEEPSEEK_API_KEY;
+    const deepseekApiUrl = process.env.DEEPSEEK_API_URL;
 
-    if (!claudeApiKey || !claudeApiUrl) {
-      return NextResponse.json({ message: 'As variáveis de ambiente da API Claude não estão configuradas.' }, { status: 500 });
+    if (!deepseekApiKey || !deepseekApiUrl) {
+      return NextResponse.json({ message: 'As variáveis de ambiente da API DeepSeek não estão configuradas.' }, { status: 500 });
     }
 
-    const response = await fetch(`${claudeApiUrl}/v1/messages`, {
+    const response = await fetch(`${deepseekApiUrl}/chat/completions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': claudeApiKey,
-        'anthropic-version': '2023-06-01',
+        'Authorization': `Bearer ${deepseekApiKey}`,
       },
       body: JSON.stringify({
-        model: 'claude-3-sonnet-20240229',
-        system: SALES_PAGE_PROMPT,
+        model: 'deepseek-chat',
         messages: [
+          { role: 'system', content: SALES_PAGE_PROMPT },
           { role: 'user', content: userInput },
         ],
         max_tokens: 4000,
@@ -161,13 +163,14 @@ export async function POST(
 
     if (!response.ok) {
       const errorBody = await response.text();
-      console.error('Erro da API Claude:', errorBody);
-      return NextResponse.json({ message: `Erro ao se comunicar com a API Claude: ${response.statusText}` }, { status: response.status });
+      console.error('Erro da API DeepSeek:', errorBody);
+      return NextResponse.json({ message: `Erro ao se comunicar com a API DeepSeek: ${response.statusText}` }, { status: response.status });
     }
 
     const result = await response.json();
-    const generatedCopy = result.content?.[0]?.text || "A IA não retornou uma copy.";
+    const generatedCopy = result.choices?.[0]?.message?.content || "A IA não retornou uma copy.";
 
+    // 4. Salvar a copy gerada no banco de dados
     await pool.query(
       'UPDATE projects SET "salesPageCopy" = $1 WHERE id = $2',
       [generatedCopy, id]
