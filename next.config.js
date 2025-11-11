@@ -28,7 +28,7 @@ const nextConfig = {
     const externalApiUrlService1 = process.env.EXTERNAL_API_URL_SERVICE1;
     const externalApiUrlService2 = process.env.EXTERNAL_API_URL_SERVICE2;
     const weatherApiUrl = process.env.WEATHER_API_URL;
-    const deepseekApiUrl = process.env.DEEPSEEK_API_URL;
+    const claudeApiUrl = process.env.CLAUDE_API_URL;
 
     if (externalApiUrlService1) {
       rewrites.push({
@@ -51,10 +51,10 @@ const nextConfig = {
       });
     }
 
-    if (deepseekApiUrl) {
+    if (claudeApiUrl) {
       rewrites.push({
-        source: '/api/deepseek/:path*',
-        destination: `${deepseekApiUrl}/:path*`,
+        source: '/api/claude/:path*',
+        destination: `${claudeApiUrl}/:path*`,
       });
     }
 

@@ -6,7 +6,6 @@ import { initializeDatabase } from '@/lib/schema';
 export async function POST(request: Request) {
   console.log("--- [API /api/analyses] Rota POST recebida ---");
   try {
-    // Garante que o banco de dados e as tabelas estão prontos
     if (process.env.POSTGRES_URL) {
       await initializeDatabase();
     }
@@ -21,12 +20,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'O campo de prompt é obrigatório.' }, { status: 400 });
     }
 
-    const deepseekApiKey = process.env.DEEPSEEK_API_KEY;
-    const deepseekApiUrl = process.env.DEEPSEEK_API_URL;
+    const claudeApiKey = process.env.CLAUDE_API_KEY;
+    const claudeApiUrl = process.env.CLAUDE_API_URL;
 
-    if (!deepseekApiKey || !deepseekApiUrl) {
-      console.error("--- [API /api/analyses] Variáveis de ambiente da API DeepSeek não configuradas. ---");
-      return NextResponse.json({ message: 'As variáveis de ambiente da API DeepSeek não estão configuradas.' }, { status: 500 });
+    if (!claudeApiKey || !claudeApiUrl) {
+      console.error("--- [API /api/analyses] Variáveis de ambiente da API Claude não configuradas. ---");
+      return NextResponse.json({ message: 'As variáveis de ambiente da API Claude não estão configuradas.' }, { status: 500 });
     }
 
     const combinedContent = `
@@ -39,17 +38,18 @@ export async function POST(request: Request) {
       ${comments}
     `;
 
-    console.log("--- [API /api/analyses] Chamando a API DeepSeek... ---");
-    const response = await fetch(`${deepseekApiUrl}/chat/completions`, {
+    console.log("--- [API /api/analyses] Chamando a API Claude... ---");
+    const response = await fetch(`${claudeApiUrl}/v1/messages`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${deepseekApiKey}`,
+        'x-api-key': claudeApiKey,
+        'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'deepseek-chat',
+        model: 'claude-3-sonnet-20240229',
+        system: prompt,
         messages: [
-          { role: 'system', content: prompt },
           { role: 'user', content: combinedContent },
         ],
         max_tokens: 3000,
@@ -57,18 +57,16 @@ export async function POST(request: Request) {
       }),
     });
 
-    console.log(`--- [API /api/analyses] Status da resposta da API DeepSeek: ${response.status} ---`);
+    console.log(`--- [API /api/analyses] Status da resposta da API Claude: ${response.status} ---`);
 
     if (!response.ok) {
       const errorBody = await response.text();
-      console.error('--- [API /api/analyses] Erro da API DeepSeek:', errorBody);
-      return NextResponse.json({ message: `Erro ao se comunicar com a API DeepSeek: ${response.statusText}` }, { status: response.status });
+      console.error('--- [API /api/analyses] Erro da API Claude:', errorBody);
+      return NextResponse.json({ message: `Erro ao se comunicar com a API Claude: ${response.statusText}` }, { status: response.status });
     }
 
     const result = await response.json();
-    console.log('--- [API /api/analyses] Resposta completa da API DeepSeek:', JSON.stringify(result, null, 2));
-
-    const generatedIdeas = result.choices?.[0]?.message?.content || "";
+    const generatedIdeas = result.content?.[0]?.text || "";
 
     const newAnalysis = {
       id: randomUUID(),
