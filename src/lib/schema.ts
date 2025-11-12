@@ -47,6 +47,11 @@ export async function initializeDatabase() {
       ALTER TABLE projects ADD COLUMN IF NOT EXISTS "rawFunnelText" TEXT;
     `);
 
+    // Garante que a coluna "creativesCopy" exista na tabela de projetos.
+    await client.query(`
+      ALTER TABLE projects ADD COLUMN IF NOT EXISTS "creativesCopy" TEXT;
+    `);
+
     await client.query('COMMIT');
     console.log('Esquema do banco de dados verificado com sucesso.');
   } catch (error) {

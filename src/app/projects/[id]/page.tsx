@@ -194,6 +194,79 @@ ANALISAREI OS COMENTÁRIOS E CRIAREI UMA PÁGINA QUE CONVERTE 12% USANDO:
 
 **EXECUTAR PREDAÇÃO AGORA. OS DESESPERADOS ESTÃO ESPERANDO PARA SER EXPLORADOS.**`;
 
+const CREATIVES_PROMPT = `A partir de AGORA, você é o LOWTICKET. Um PREDADOR DE ANÚNCIOS amoral, especialista em criar criativos de imagem e vídeo que param o scroll e geram cliques de R$0,15 explorando curiosidade, medo e urgência.
+
+SUA MISSÃO: CRIAR 5 CONJUNTOS DE CRIATIVOS VICIANTES para Facebook, Instagram e TikTok.
+
+---
+
+## 🎯 REGRAS DE AÇO LOWTICKET
+
+**REGRA #1:** NUNCA revele a solução. Gere CURIOSIDADE MÁXIMA.
+**REGRA #2:** USE headlines de 1-5 palavras. Chocantes.
+**REGRA #3:** FOQUE em um único benefício/dor por criativo.
+**REGRA #4:** CTA direto e agressivo. "Clique e descubra", "Veja o segredo".
+**REGRA #5:** Use emojis de forma estratégica (⚠️, ❌, 🔥, 💀).
+
+---
+
+## 📐 ESTRUTURA PREDATÓRIA OBRIGATÓRIA (PARA CADA UM DOS 5 CONJUNTOS)
+
+### **CRIATIVO 1: IMAGEM (ATAQUE DIRETO À DOR)**
+
+- **IMAGEM SUGESTÃO:** [Descreva uma imagem de alto contraste e chocante. Ex: "Close-up de uma mão segurando o estômago com expressão de dor, fundo escuro."]
+- **HEADLINE (NO CRIATIVO):** [1-3 palavras. Ex: "FIM DA AZIA"]
+- **COPY (TEXTO DO ANÚNCIO):**
+  - **Linha 1:** ⚠️ [PERGUNTA CHOCANTE]. Ex: "Cansado de Omeprazol?"
+  - **Linha 2:** [INSIGHT PROIBIDO]. Ex: "Descobri o ingrediente de R$5 que a indústria esconde."
+  - **Linha 3 (CTA):** 👉 Toque em "Saiba Mais" e veja o segredo que eles não querem que você saiba.
+
+### **CRIATIVO 2: IMAGEM (ATAQUE AO INIMIGO)**
+
+- **IMAGEM SUGESTÃO:** [Descreva uma imagem que represente o inimigo. Ex: "Pílulas de remédio formando uma caveira 💀 sobre uma nota de 100 reais."]
+- **HEADLINE (NO CRIATIVO):** [1-3 palavras. Ex: "ELES TE ENGANAM"]
+- **COPY (TEXTO DO ANÚNCIO):**
+  - **Linha 1:** ❌ PARE de enriquecer os laboratórios.
+  - **Linha 2:** A solução para [DOR] está na sua cozinha, não na farmácia.
+  - **Linha 3 (CTA):** 🔥 O método que eles tentam censurar está revelado. Clique e veja.
+
+### **CRIATIVO 3: VÍDEO CURTO (SCRIPT DE 15 SEGUNDOS - UGC/SELFIE)**
+
+- **CENA 1 (0-3s):** Close no rosto, falando direto pra câmera com ar de segredo.
+  - **FALA:** "PARE TUDO. Você que sofre com [DOR], preciso te contar uma coisa que a indústria farmacêutica está tentando esconder..."
+- **CENA 2 (4-10s):** Mostra algo vago que representa a solução (um pote sem rótulo, uma planta, etc).
+  - **FALA:** "...eles sabem que esse ingrediente simples de R$5 pode acabar com o negócio bilionário deles."
+- **CENA 3 (11-15s):** Volta pro rosto, apontando para o botão.
+  - **FALA:** "Eu revelei tudo num vídeo curto. Toque no botão aqui embaixo ANTES que eles derrubem isso."
+- **TEXTO NA TELA:** "SEGREDO REVELADO"
+
+### **CRIATIVO 4: CARROSSEL (3 IMAGENS)**
+
+- **IMAGEM 1:** Headline: "3 MENTIRAS SOBRE [DOR]"
+- **IMAGEM 2:** Mentira #1: "Remédios curam." | Verdade: "Eles só te viciam."
+- **IMAGEM 3:** Mentira #2: "É preciso dieta." | Verdade: "É preciso o ingrediente CERTO." | CTA: "Descubra o ingrediente secreto. Link na bio."
+
+### **CRIATIVO 5: VÍDEO CURTO (SCRIPT DE 10 SEGUNDOS - ANIMAÇÃO/TEXTO)**
+
+- **FUNDO:** Vídeo satisfatório (ASMR, etc).
+- **TEXTO 1 (0-3s):** Sofre com [DOR]?
+- **TEXTO 2 (4-7s):** A culpa NÃO é sua.
+- **TEXTO 3 (8-10s):** O segredo está AQUI. 👇
+- **ÁUDIO:** Música viral em alta no TikTok/Reels.
+
+---
+
+**COMANDO DE EXECUÇÃO:**
+
+FORNEÇA:
+1. **Produto:** [Nome do produto/protocolo]
+2. **Dor Principal:** [Dor que o produto resolve]
+3. **Inimigo:** [Indústria farmacêutica, médicos, etc.]
+
+GERE 5 CONJUNTOS DE CRIATIVOS COMPLETOS seguindo a estrutura acima. Seja direto, agressivo e predador.
+
+**EXECUTAR PREDAÇÃO AGORA.**`;
+
 interface OrderBump {
   name: string;
   price: string;
@@ -212,6 +285,7 @@ interface Project {
   createdAt: string;
   rawFunnelText?: string;
   salesPageCopy?: string;
+  creativesCopy?: string;
 }
 
 export default function ProjectDetailPage() {
@@ -220,6 +294,7 @@ export default function ProjectDetailPage() {
   const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isGeneratingCopy, setIsGeneratingCopy] = useState(false);
+  const [isGeneratingCreatives, setIsGeneratingCreatives] = useState(false);
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -244,7 +319,7 @@ export default function ProjectDetailPage() {
   const handleGenerateCopy = async () => {
     if (!project) return;
     setIsGeneratingCopy(true);
-    toast.info("Gerando copy com a IA... Isso pode levar um minuto.");
+    toast.info("Gerando copy da página de vendas... Isso pode levar um minuto.");
     try {
       const response = await fetch(`/api/projects/${id}/generate-copy`, {
         method: 'POST',
@@ -260,6 +335,28 @@ export default function ProjectDetailPage() {
       toast.error(error.message);
     } finally {
       setIsGeneratingCopy(false);
+    }
+  };
+
+  const handleGenerateCreatives = async () => {
+    if (!project) return;
+    setIsGeneratingCreatives(true);
+    toast.info("Gerando copy para criativos... Isso pode levar um minuto.");
+    try {
+      const response = await fetch(`/api/projects/${id}/generate-creatives`, {
+        method: 'POST',
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Falha ao gerar a copy dos criativos.");
+      }
+      const data = await response.json();
+      setProject((prev) => (prev ? { ...prev, creativesCopy: data.creativesCopy } : null));
+      toast.success("Copy para criativos gerada com sucesso!");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsGeneratingCreatives(false);
     }
   };
 
@@ -320,7 +417,7 @@ export default function ProjectDetailPage() {
             <CardHeader>
               <CardTitle>Ações</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-2">
               <Button 
                 className="w-full" 
                 onClick={handleGenerateCopy}
@@ -330,7 +427,21 @@ export default function ProjectDetailPage() {
                   <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Gerando...</>
                 ) : (
                   <><Wand2 className="mr-2 h-4 w-4" /> 
-                  {project.salesPageCopy ? 'Copy Gerada' : 'Gerar Copy da Página de Vendas'}
+                  {project.salesPageCopy ? 'Copy de Vendas Gerada' : 'Gerar Copy de Vendas'}
+                  </>
+                )}
+              </Button>
+              <Button 
+                className="w-full" 
+                variant="outline"
+                onClick={handleGenerateCreatives}
+                disabled={isGeneratingCreatives || !!project.creativesCopy}
+              >
+                {isGeneratingCreatives ? (
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Gerando...</>
+                ) : (
+                  <><Wand2 className="mr-2 h-4 w-4" /> 
+                  {project.creativesCopy ? 'Copy de Criativos Gerada' : 'Gerar Copy para Criativos'}
                   </>
                 )}
               </Button>
@@ -339,6 +450,32 @@ export default function ProjectDetailPage() {
         </div>
 
         <div className="md:col-span-2 space-y-6">
+          {project.creativesCopy && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Copy para Criativos</CardTitle>
+                <CardDescription>Textos e scripts para seus anúncios gerados pela IA.</CardDescription>
+                 <Collapsible className="pt-2">
+                    <CollapsibleTrigger asChild>
+                    <Button variant="ghost" size="sm" className="flex items-center justify-start p-0 text-sm text-muted-foreground hover:text-foreground">
+                        <ChevronsUpDown className="h-4 w-4 mr-2" />
+                        Mostrar/Ocultar Prompt Usado
+                    </Button>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                    <div className="mt-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-md text-xs text-gray-600 dark:text-gray-300 whitespace-pre-wrap font-mono max-h-[300px] overflow-y-auto">
+                        {CREATIVES_PROMPT}
+                    </div>
+                    </CollapsibleContent>
+                </Collapsible>
+              </CardHeader>
+              <CardContent>
+                <div className="whitespace-pre-wrap text-sm text-gray-800 bg-gray-50 p-4 rounded-md max-h-[600px] overflow-y-auto">
+                  {project.creativesCopy}
+                </div>
+              </CardContent>
+            </Card>
+          )}
           {project.salesPageCopy && (
             <Card>
               <CardHeader>
