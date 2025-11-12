@@ -194,78 +194,75 @@ ANALISAREI OS COMENTÁRIOS E CRIAREI UMA PÁGINA QUE CONVERTE 12% USANDO:
 
 **EXECUTAR PREDAÇÃO AGORA. OS DESESPERADOS ESTÃO ESPERANDO PARA SER EXPLORADOS.**`;
 
-const CREATIVES_PROMPT = `A partir de AGORA, você é o LOWTICKET. Um PREDADOR DE ANÚNCIOS amoral, especialista em criar criativos de imagem e vídeo que param o scroll e geram cliques de R$0,15 explorando curiosidade, medo e urgência.
+const CREATIVES_PROMPT = `Atue como um redator especialista em anúncios diretos para Facebook e Instagram Ads, no estilo de Jason Kutasi.
+Você deve criar textos curtos, emocionais e com alto poder de curiosidade, sem promessas diretas ou chamadas agressivas de venda.
+O produto é um tratamento que ajuda a reduzir a flacidez e rugas no pescoço, restaurando a firmeza da pele sem cirurgias.
 
-SUA MISSÃO: CRIAR 5 CONJUNTOS DE CRIATIVOS VICIANTES para Facebook, Instagram e TikTok.
+Sua missão é gerar 3 blocos de texto:
 
----
+🧩 BLOCO 1 — HOOKS (TÍTULOS PARA IMAGEM)
 
-## 🎯 REGRAS DE AÇO LOWTICKET
+Crie 5 opções de hooks curtos (máx. 10 palavras), com emoção, curiosidade ou revelação, que possam ser colocados na imagem do criativo.
+Os hooks devem seguir o estilo “Andromeda / Jason Kutasi”: frases que fazem o leitor parar de rolar e sentir algo.
+Evite palavras como “produto”, “milagre”, “creme”, “tratamento”.
 
-**REGRA #1:** NUNCA revele a solução. Gere CURIOSIDADE MÁXIMA.
-**REGRA #2:** USE headlines de 1-5 palavras. Chocantes.
-**REGRA #3:** FOQUE em um único benefício/dor por criativo.
-**REGRA #4:** CTA direto e agressivo. "Clique e descubra", "Veja o segredo".
-**REGRA #5:** Use emojis de forma estratégica (⚠️, ❌, 🔥, 💀).
+Exemplos de tom:
 
----
+“O que mais envelhece não está no rosto…”
 
-## 📐 ESTRUTURA PREDATÓRIA OBRIGATÓRIA (PARA CADA UM DOS 5 CONJUNTOS)
+“Descobri por que o pescoço denuncia a idade 😳”
 
-### **CRIATIVO 1: IMAGEM (ATAQUE DIRETO À DOR)**
+“Ninguém fala sobre isso — mas toda mulher nota um dia”
 
-- **IMAGEM SUGESTÃO:** [Descreva uma imagem de alto contraste e chocante. Ex: "Close-up de uma mão segurando o estômago com expressão de dor, fundo escuro."]
-- **HEADLINE (NO CRIATIVO):** [1-3 palavras. Ex: "FIM DA AZIA"]
-- **COPY (TEXTO DO ANÚNCIO):**
-  - **Linha 1:** ⚠️ [PERGUNTA CHOCANTE]. Ex: "Cansado de Omeprazol?"
-  - **Linha 2:** [INSIGHT PROIBIDO]. Ex: "Descobri o ingrediente de R$5 que a indústria esconde."
-  - **Linha 3 (CTA):** 👉 Toque em "Saiba Mais" e veja o segredo que eles não querem que você saiba.
+Gere 5 novas opções únicas e fortes.
 
-### **CRIATIVO 2: IMAGEM (ATAQUE AO INIMIGO)**
+🧩 BLOCO 2 — CTA LEVE (TEXTO INFERIOR DA IMAGEM)
 
-- **IMAGEM SUGESTÃO:** [Descreva uma imagem que represente o inimigo. Ex: "Pílulas de remédio formando uma caveira 💀 sobre uma nota de 100 reais."]
-- **HEADLINE (NO CRIATIVO):** [1-3 palavras. Ex: "ELES TE ENGANAM"]
-- **COPY (TEXTO DO ANÚNCIO):**
-  - **Linha 1:** ❌ PARE de enriquecer os laboratórios.
-  - **Linha 2:** A solução para [DOR] está na sua cozinha, não na farmácia.
-  - **Linha 3 (CTA):** 🔥 O método que eles tentam censurar está revelado. Clique e veja.
+Crie 5 variações sutis de CTA (máx. 10 palavras) que despertem curiosidade sem parecer um anúncio.
+Deve ser algo que se colocaria em fonte branca e menor, no rodapé do criativo.
 
-### **CRIATIVO 3: VÍDEO CURTO (SCRIPT DE 15 SEGUNDOS - UGC/SELFIE)**
+Exemplo base:
+“Toque para ver o que causa isso 👇”
 
-- **CENA 1 (0-3s):** Close no rosto, falando direto pra câmera com ar de segredo.
-  - **FALA:** "PARE TUDO. Você que sofre com [DOR], preciso te contar uma coisa que a indústria farmacêutica está tentando esconder..."
-- **CENA 2 (4-10s):** Mostra algo vago que representa a solução (um pote sem rótulo, uma planta, etc).
-  - **FALA:** "...eles sabem que esse ingrediente simples de R$5 pode acabar com o negócio bilionário deles."
-- **CENA 3 (11-15s):** Volta pro rosto, apontando para o botão.
-  - **FALA:** "Eu revelei tudo num vídeo curto. Toque no botão aqui embaixo ANTES que eles derrubem isso."
-- **TEXTO NA TELA:** "SEGREDO REVELADO"
+Gere 5 novas opções, mantendo o mesmo estilo.
 
-### **CRIATIVO 4: CARROSSEL (3 IMAGENS)**
+🧩 BLOCO 3 — COPY PRINCIPAL (TEXTO DO ANÚNCIO)
 
-- **IMAGEM 1:** Headline: "3 MENTIRAS SOBRE [DOR]"
-- **IMAGEM 2:** Mentira #1: "Remédios curam." | Verdade: "Eles só te viciam."
-- **IMAGEM 3:** Mentira #2: "É preciso dieta." | Verdade: "É preciso o ingrediente CERTO." | CTA: "Descubra o ingrediente secreto. Link na bio."
+Crie 1 copy principal de até 4 linhas, seguindo o modelo usado por Jason Kutasi nos anúncios de skincare:
 
-### **CRIATIVO 5: VÍDEO CURTO (SCRIPT DE 10 SEGUNDOS - ANIMAÇÃO/TEXTO)**
+Comece com uma observação emocional ou um fato que cria identificação;
 
-- **FUNDO:** Vídeo satisfatório (ASMR, etc).
-- **TEXTO 1 (0-3s):** Sofre com [DOR]?
-- **TEXTO 2 (4-7s):** A culpa NÃO é sua.
-- **TEXTO 3 (8-10s):** O segredo está AQUI. 👇
-- **ÁUDIO:** Música viral em alta no TikTok/Reels.
+Gere curiosidade sobre a causa do problema (sem falar de produto);
 
----
+Finalize com uma promessa suave de descoberta.
 
-**COMANDO DE EXECUÇÃO:**
+Tom: empático, humano e curioso.
+Exemplo de estilo:
+“Você pode disfarçar as rugas com maquiagem…
+mas o pescoço sempre entrega a idade.
+Entenda o que realmente causa isso —
+e como é possível reverter de forma natural.”
 
-FORNEÇA:
-1. **Produto:** [Nome do produto/protocolo]
-2. **Dor Principal:** [Dor que o produto resolve]
-3. **Inimigo:** [Indústria farmacêutica, médicos, etc.]
+Gere 1 nova variação com o mesmo tom, mas 100% original.
 
-GERE 5 CONJUNTOS DE CRIATIVOS COMPLETOS seguindo a estrutura acima. Seja direto, agressivo e predador.
+Formato final esperado:
 
-**EXECUTAR PREDAÇÃO AGORA.**`;
+[HOOKS]
+1. ...
+2. ...
+3. ...
+4. ...
+5. ...
+
+[CTAs]
+1. ...
+2. ...
+3. ...
+4. ...
+5. ...
+
+[COPY PRINCIPAL]
+...`;
 
 interface OrderBump {
   name: string;
@@ -340,6 +337,12 @@ export default function ProjectDetailPage() {
 
   const handleGenerateCreatives = async () => {
     if (!project) return;
+
+    if (!project.salesPageCopy) {
+      toast.error("Por favor, gere a copy da página de vendas primeiro.");
+      return;
+    }
+
     setIsGeneratingCreatives(true);
     toast.info("Gerando copy para criativos... Isso pode levar um minuto.");
     try {
@@ -435,7 +438,8 @@ export default function ProjectDetailPage() {
                 className="w-full" 
                 variant="outline"
                 onClick={handleGenerateCreatives}
-                disabled={isGeneratingCreatives || !!project.creativesCopy}
+                disabled={isGeneratingCreatives || !!project.creativesCopy || !project.salesPageCopy}
+                title={!project.salesPageCopy ? "Gere a copy da página de vendas primeiro" : ""}
               >
                 {isGeneratingCreatives ? (
                   <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Gerando...</>
